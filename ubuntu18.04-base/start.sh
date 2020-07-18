@@ -12,7 +12,7 @@ if [ -z "$AZP_TOKEN_FILE" ]; then
     exit 1
   fi
 
-  AZP_TOKEN_FILE=/azp/.token
+  AZP_TOKEN_FILE=/etc/services/azp/.token
   echo -n $AZP_TOKEN > "$AZP_TOKEN_FILE"
 fi
 
@@ -37,17 +37,17 @@ if [ -n "$AZP_WORK" ]; then
 fi
 
 if [ $FORCEUPDATE == "1" ]; then
-  print_info 'Forcing agent update: deleting /azp/agent folder'
-  print_info 'Note: if your AZP_WORK variable is inside /azp/agent; installed tools will be deleted, too'
+  print_info 'Forcing agent update: deleting /etc/services/azp/agent folder'
+  print_info 'Note: if your AZP_WORK variable is inside /etc/services/azp/agent; installed tools will be deleted, too'
 
-  rm -rf /azp/agent
-  mkdir /azp/agent
+  rm -rf /etc/services/azp/agent
+  mkdir /etc/services/azp/agent
 fi
 
-if [ ! -e /azp/agent ]; then
-  mkdir /azp/agent
+if [ ! -e /etc/services/azp/agent ]; then
+  mkdir /etc/services/azp/agent
 fi
-cd /azp/agent
+cd /etc/services/azp/agent
 
 export AGENT_ALLOW_RUNASROOT="1"
 
@@ -97,7 +97,7 @@ trap 'cleanup; exit 143' TERM
 
 print_info "Configuring Azure Pipelines agent..."
 
-STARTED_FILE=/azp/.started
+STARTED_FILE=/etc/services/azp/.started
 
 # NB: a trick to avoid confusing messages: the remove command would 
 # not block code execution, even if there is no agent to be removed.

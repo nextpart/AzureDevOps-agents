@@ -1,4 +1,5 @@
-FROM ubuntu:16.04
+ARG baseimage="ubuntu:16.04"
+FROM ${baseimage}
 
 ENV DEBIAN_FRONTEND=noninteractive \
     METADATA_FILE=/image/metadata.txt \

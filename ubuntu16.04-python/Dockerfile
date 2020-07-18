@@ -1,4 +1,5 @@
-FROM devopsubuntu16.04:latest
+ARG baseimage="devopsubuntu16.04:latest"
+FROM ${baseimage}
 
 COPY scripts /scripts
 

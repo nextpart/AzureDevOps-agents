@@ -1,0 +1,54 @@
+# Author: Michael Bischof <michael@nextpart.io>
+# Organisation: Nextpart Security Intelligence GmbH
+# Description: Build and push project utility images
+
+name: $(Date:yyyyMMdd)$(Rev:.r) - DevOps Pipeline Agent
+
+trigger:
+  branches:
+    include:
+    - master
+    - topic-*
+
+variables:
+  - group: docker
+
+pool: Default
+  # vmImage: ubuntu-latest
+
+jobs:
+  - job: Build_Push_image
+    pool: Default
+    steps:
+      - checkout: self
+        fetchDepth: 1
+      - task: DockerCompose@0
+        displayName: Build services
+        inputs:
+          action: Build services
+          azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+          azureContainerRegistry: $(azureContainerRegistry)
+          dockerComposeFile: docker-compose.yml
+          projectName: $(Build.Repository.Name)
+          qualifyImageNames: true
+          additionalImageTags: $(Build.BuildId)
+          includeSourceTags: true
+          includeLatestTag: true
+        env:
+          azureContainerRegistry: $(azureContainerRegistry)
+          baseimage: $(baseimage)
+      - task: DockerCompose@0
+        displayName: Push services
+        inputs:
+          action: Push services
+          azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+          azureContainerRegistry: $(azureContainerRegistry)
+          dockerComposeFile: docker-compose.yml
+          projectName: $(Build.Repository.Name)
+          qualifyImageNames: true
+          additionalImageTags: $(Build.BuildId)
+          includeSourceTags: true
+          includeLatestTag: true
+        env:
+          azureContainerRegistry: $(azureContainerRegistry)
+          

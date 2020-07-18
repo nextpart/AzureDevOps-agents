@@ -1,10 +1,15 @@
-FROM devopsubuntu18.04:latest
+ARG baseimage="devopsubuntu18.04:latest"
+FROM ${baseimage}
+
 
 COPY scripts /scripts
 
 ENV AGENT_TOOLSDIRECTORY=/_work/_tool
 
-RUN apt-get update && apt-get install make \
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    make \
     build-essential \
     libssl-dev \
     zlib1g-dev \

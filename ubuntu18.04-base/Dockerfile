@@ -1,4 +1,5 @@
-FROM ubuntu:18.04
+ARG baseimage="ubuntu:18.04"
+FROM ${baseimage}
 
 ENV DEBIAN_FRONTEND=noninteractive \
     METADATA_FILE=/image/metadata.txt \
@@ -9,19 +10,19 @@ RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes && \
     mkdir agent && \
     touch /image/metadata.txt
 
-COPY scripts /scripts
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --fix-missing \
+        apt-utils \
+        lsb-release \ 
+        lsb-core \
+        software-properties-common \
+        apt-transport-https \
+        ca-certificates \
+        gnupg \
+        sqlite \
+        sqlite3
 
-RUN apt-get update && \
-    apt-get install \
-    apt-utils \
-    lsb-release \ 
-    lsb-core \
-    software-properties-common \
-    apt-transport-https \
-    ca-certificates \
-    gnupg \
-    sqlite \
-    sqlite3
+COPY scripts /scripts
 
 RUN /scripts/base/preparemetadata.sh && \
     /scripts/installers/basic.sh && \
@@ -34,10 +35,13 @@ RUN /scripts/base/preparemetadata.sh && \
     /scripts/installers/cmake.sh && \
     /scripts/installers/build-essential.sh && \
     /scripts/installers/azure-cli.sh && \
-    /scripts/installers/azure-devops-cli.sh
+    /scripts/installers/azure-devops-cli.sh && \
+    rm -rf /scripts/installers
 
-WORKDIR /azp
+RUN mv /etc/services /etc/services.bak && mkdir /etc/services && mkdir /etc/services/azp
 
-COPY ./start.sh .
+WORKDIR /etc/services/azp/
 
-CMD ["./start.sh"]
+COPY ./start.sh run
+
+CMD ["./run"]

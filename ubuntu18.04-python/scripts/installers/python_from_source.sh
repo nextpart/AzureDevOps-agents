@@ -27,7 +27,7 @@ rm -rf Python-$VERSION
 cd $AGENT_TOOLSDIRECTORY/Python/$VERSION/x64/bin
 ln -s $(find -name 'python*' ! -name '*config' ! -name '*m') python
 ln -s pip* pip
-cd /azp/
+cd /etc/services/azp/
 
 echo "Lastly, documenting what we added to the metadata file"
 DocumentInstalledItem "Python $VERSION"

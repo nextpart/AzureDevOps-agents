@@ -1,0 +1,49 @@
+#-------------------------------------------------------------------------------------------------------------
+# Copyright (c) Nextpart Security Intelligence GmbH. All rights reserved.
+#-------------------------------------------------------------------------------------------------------------
+
+version: '3.4'
+services:
+  ubuntu18.04-base:
+    image: ${azureContainerRegistry}devopsubuntu18.04:latest 
+    build:
+      context: ./ubuntu18.04-base
+      args:
+        baseimage: ${baseimage} # using phusion/baseimage:18.04-1.0.0 would probably be a good idea
+    environment:
+      AZP_URL: ${AZP_URL}
+      AZP_TOKEN: ${AZP_TOKEN}
+      AZP_AGENT_NAME: "dockeragent-base"
+  
+  ubuntu18.04-python:
+    image: ${azureContainerRegistry}devopsubuntu18.04-python:latest
+    build:
+      context: ./ubuntu18.04-python
+      args:
+        baseimage: ${azureContainerRegistry}devopsubuntu18.04:latest
+    environment:
+      AZP_URL: ${AZP_URL}
+      AZP_TOKEN: ${AZP_TOKEN}
+      AZP_AGENT_NAME: "dockeragent-python"
+
+  ubuntu18.04-docker:
+    image: ${azureContainerRegistry}devopsubuntu18.04-docker:latest
+    build:
+      context: ./ubuntu18.04-docker
+      args:
+        baseimage: ${azureContainerRegistry}devopsubuntu18.04:latest
+    environment:
+      AZP_URL: ${AZP_URL}
+      AZP_TOKEN: ${AZP_TOKEN}
+      AZP_AGENT_NAME: "dockeragent-docker"
+
+  super: # just docker and python combined
+    image: ${azureContainerRegistry}devopsubuntu18.04-super:latest
+    build:
+      context: ./ubuntu18.04-docker
+      args:
+        baseimage: ${azureContainerRegistry}devopsubuntu18.04-python:latest
+    environment:
+      AZP_URL: ${AZP_URL}
+      AZP_TOKEN: ${AZP_TOKEN}
+      AZP_AGENT_NAME: "dockeragent-super"
